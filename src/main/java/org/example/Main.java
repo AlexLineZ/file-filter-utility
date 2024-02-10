@@ -1,7 +1,12 @@
 package org.example;
 
+import org.example.options.LaunchOptions;
+
+import java.util.*;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        LaunchOptions launchOptions = new LaunchOptions(args);
+        launchOptions.printOptions();
     }
 }
