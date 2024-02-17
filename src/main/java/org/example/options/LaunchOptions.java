@@ -12,84 +12,78 @@ import java.util.List;
 
 public class LaunchOptions {
     private String[] args;
-    private static String outputPath = "./output";
+    private static String outputPath = "./";
     private static String prefix = "";
     private static boolean appendMode = false;
-    private static StatisticType statisticType = StatisticType.FULL;
+    private static StatisticType statisticType = StatisticType.NOTHING;
     private List<String> inputFiles = new ArrayList<>();
 
-    public LaunchOptions(String[] args){
+    public LaunchOptions(String[] args) {
         this.args = args;
         initial();
     }
 
     private void initial() {
-        setOutputPath();
-        setPrefix();
-        setAppendMode();
-        setStatisticType();
-        setInputFiles();
-    }
+        List<String> argsList = Arrays.asList(args);
+        boolean expectValue = false;
 
-    private void setOutputPath(){
-        var argsList = Arrays.asList(args);
-        int indexOfO = argsList.indexOf("-o");
-        if (indexOfO != -1 && argsList.size() > indexOfO + 1) {
-            String potentialPath = argsList.get(indexOfO + 1);
-            if (!potentialPath.startsWith("-")) {
-                try {
-                    Paths.get(potentialPath);
-                    outputPath = potentialPath;
-                } catch (InvalidPathException e) {
-                    System.err.println("The specified output path is invalid: " + potentialPath);
-                }
-            } else {
-                System.err.println("The output path is not specified correctly after -o");
+        for (int i = 0; i < argsList.size(); i++) {
+            String arg = argsList.get(i);
+
+            if (expectValue) {
+                expectValue = false;
+                continue;
+            }
+
+            switch (arg) {
+                case "-o":
+                    setOutputPath(i);
+                    expectValue = true;
+                    break;
+                case "-p":
+                    setPrefix(i);
+                    expectValue = true;
+                    break;
+                case "-a":
+                    appendMode = true;
+                    break;
+                case "-s":
+                    statisticType = StatisticType.SHORT;
+                    break;
+                case "-f":
+                    statisticType = StatisticType.FULL;
+                    break;
+                default:
+                    if (!arg.startsWith("-")) {
+                        inputFiles.add(arg);
+                    }
+                    break;
             }
         }
     }
 
-    private void setAppendMode() {
-        var argsList = Arrays.asList(args);
-        appendMode = argsList.contains("-a");
-    }
-
-    private void setPrefix() {
-        var argsList = Arrays.asList(args);
-        int indexOfP = argsList.indexOf("-p");
-        if (indexOfP != -1 && argsList.size() > indexOfP + 1) {
-            prefix = argsList.get(indexOfP + 1);
+    private void setOutputPath(int index) {
+        if (index + 1 < args.length) {
+            String potentialPath = args[index + 1];
+            try {
+                Paths.get(potentialPath);
+                outputPath = potentialPath;
+            } catch (InvalidPathException e) {
+                System.err.println("The specified output path is invalid: " + potentialPath);
+            }
+        } else {
+            System.err.println("The output path is not specified correctly after -o");
         }
     }
 
-    private void setStatisticType() {
-        var argsList = Arrays.asList(args);
-        if (argsList.contains("-s")) {
-            statisticType = StatisticType.SHORT;
-        } else if (argsList.contains("-f")) {
-            statisticType = StatisticType.FULL;
+    private void setPrefix(int index) {
+        if (index + 1 < args.length) {
+            prefix = args[index + 1];
         }
     }
 
-    private void setInputFiles() {
-        List<String> argsList = Arrays.asList(args);
-        int lastKeyIndex = Math.max(argsList.lastIndexOf("-o"), argsList.lastIndexOf("-p"));
-        lastKeyIndex = Math.max(lastKeyIndex, argsList.lastIndexOf("-a"));
-        lastKeyIndex = Math.max(lastKeyIndex, argsList.lastIndexOf("-s"));
-        lastKeyIndex = Math.max(lastKeyIndex, argsList.lastIndexOf("-f"));
-
-        if (lastKeyIndex != -1 && lastKeyIndex + 1 < argsList.size()) {
-            inputFiles = argsList.subList(lastKeyIndex + 2, argsList.size());
-        }
-    }
-
-    public void printOptions() {
-        System.out.println("Current launch settings:");
-        System.out.println("Output path: " + outputPath);
-        System.out.println("File name prefix: " + prefix);
-        System.out.println("Append mode: " + (appendMode ? "enabled" : "disabled"));
-        System.out.println("Statistic type: " + (statisticType == StatisticType.FULL ? "full" : "short"));
-        System.out.println("Input files: " + inputFiles.toString());
+    public List<String> getInputFiles() {
+        return inputFiles;
     }
 
     public String getOutputPath() {
