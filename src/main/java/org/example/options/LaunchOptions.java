@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//java -jar util.jar -s -a -o "./outputput" -p sample- in1.txt in2.txt
-
 public class LaunchOptions {
     private String[] args;
     private static String outputPath = "./";

@@ -36,22 +36,25 @@ public class DataSorter {
                     try {
                         processFile(inputFile);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        System.err.println("Error processing file: " + inputFile + ". " + e.getMessage());
                     }
                 });
             }
             executor.shutdown();
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            if (!executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
+                executor.shutdownNow();
+            }
             summarizeStatistics();
+        } catch (InterruptedException e) {
+            System.err.println("Execution interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Unexpected error: " + e.getMessage());
         }
     }
 
     private void processFile(String inputFile) throws IOException {
-        Files.lines(Paths.get(inputFile)).forEach(line -> {
-            processLine(line);
-        });
+        Files.lines(Paths.get(inputFile)).forEach(this::processLine);
     }
 
     private void processLine(String line) {
@@ -70,7 +73,7 @@ public class DataSorter {
         try {
             writeLine(type, line);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Failed to write line to file: " + e.getMessage());
         }
     }
 
@@ -99,7 +102,7 @@ public class DataSorter {
                     try {
                         Files.deleteIfExists(filePath);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        System.err.println("Failed to delete existing file: " + fileName + ". " + e.getMessage());;
                     }
                 }
             });

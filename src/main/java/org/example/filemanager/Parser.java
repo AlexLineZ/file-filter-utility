@@ -3,7 +3,7 @@ package org.example.filemanager;
 public class Parser {
     public static boolean isInteger(String s) {
         try {
-            Integer.parseInt(s);
+            Long.parseLong(s);
             return true;
         } catch (NumberFormatException e) {
             return false;
