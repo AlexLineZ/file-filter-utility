@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LaunchOptions {
-    private String[] args;
+    private final String[] args;
     private static String outputPath = "./";
     private static String prefix = "";
     private static boolean appendMode = false;

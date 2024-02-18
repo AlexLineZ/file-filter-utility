@@ -1,5 +1,6 @@
 package org.example.filemanager;
 
+import org.example.enums.Constants;
 import org.example.enums.StatisticType;
 import org.example.options.LaunchOptions;
 import org.example.statistic.NumberStatistic;
@@ -60,13 +61,13 @@ public class DataSorter {
     private void processLine(String line) {
         String type;
         if (Parser.isInteger(line)) {
-            type = "integers";
+            type = Constants.INTEGER;
             integerStat.update(line);
         } else if (Parser.isFloat(line)) {
-            type = "floats";
+            type = Constants.FLOAT;
             floatStat.update(line);
         } else {
-            type = "strings";
+            type = Constants.STRING;
             stringStat.update(line);
         }
 
@@ -95,7 +96,7 @@ public class DataSorter {
     private void clearOutputFilesIfRequired() {
         if (!options.isAppendMode()) {
             options.getInputFiles().forEach(inputFile -> {
-                String[] fileTypes = {"integers", "floats", "strings"};
+                String[] fileTypes = {Constants.INTEGER, Constants.FLOAT, Constants.STRING};
                 for (String type : fileTypes) {
                     String fileName = options.getOutputPath() + "/" + options.getPrefix() + type + ".txt";
                     Path filePath = Paths.get(fileName);
