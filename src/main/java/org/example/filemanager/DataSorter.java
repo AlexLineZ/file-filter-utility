@@ -92,7 +92,7 @@ public class DataSorter {
         }
     }
 
-    public void clearOutputFilesIfRequired() {
+    private void clearOutputFilesIfRequired() {
         if (!options.isAppendMode()) {
             options.getInputFiles().forEach(inputFile -> {
                 String[] fileTypes = {"integers", "floats", "strings"};
@@ -109,7 +109,7 @@ public class DataSorter {
         }
     }
 
-    public void summarizeStatistics() {
+    private void summarizeStatistics() {
         if (options.getStatisticType() == StatisticType.SHORT) {
             System.out.println("Short statistics:");
             System.out.println("Integers: " + integerStat.shortSummarize());
