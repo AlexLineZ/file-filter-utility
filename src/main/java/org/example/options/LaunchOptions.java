@@ -14,7 +14,7 @@ public class LaunchOptions {
     private static String prefix = "";
     private static boolean appendMode = false;
     private static StatisticType statisticType = StatisticType.NOTHING;
-    private List<String> inputFiles = new ArrayList<>();
+    private final List<String> inputFiles = new ArrayList<>();
 
     public LaunchOptions(String[] args) {
         this.args = args;
